@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     private float horizontalScreenLimit = 10f;
     private float verticalScreenLimit = 4f;
     public int lives;
+    public int shieldAmount;
     public GameObject gM;
     public AudioClip coinSound;
     public AudioClip healthSound;
@@ -17,6 +18,7 @@ public class Player : MonoBehaviour
     public AudioClip powerdownSound;
     private bool betterWeapon;
     public GameObject thruster;
+    public GameObject shield;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
         playerSpeed = 6f;
         betterWeapon = false;
         lives = 3;
+        shieldAmount = 0;
         gM = GameObject.Find("GameManager");
     }
 
@@ -65,9 +68,19 @@ public class Player : MonoBehaviour
 
     public void LoseLife()
     {
-        lives--;
-        //lives -= 1;
-        //lives = lives - 1;
+        if (shieldAmount == 1) 
+        {
+            shieldAmount--;
+            shield.SetActive(false);
+            gM.GetComponent<GameManager>().PowerupChange("No Powerup");
+        }
+        else 
+        {
+            lives--;
+            //lives -= 1;
+            //lives = lives - 1;
+        }
+        
         gM.GetComponent<GameManager>().LivesChange(lives);
         if (lives <= 0) 
         {
@@ -121,6 +134,8 @@ public class Player : MonoBehaviour
                 } else if (tempInt == 3)
                 {
                     //Shield Powerup
+                    shieldAmount = 1;
+                    shield.SetActive(true);
                     gM.GetComponent<GameManager>().PowerupChange("Shield");
                 }
                 break;
